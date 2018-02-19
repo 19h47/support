@@ -62,26 +62,26 @@ function support_register_post_type() {
 
 	// Post type rewrite
 	$rewrite = array(
-		'slug' 			=> apply_filters( 'support_rewrite_slug', $slug ),
+		'slug' 		=> apply_filters( 'support_rewrite_slug', $slug ),
 		'with_front' 	=> false
 	);
 
 	// Post type capabilities
 	$capabilities = array(
-		'read'					 => 'view_ticket',
-		'read_post'				 => 'view_ticket',
-		'read_private_posts' 	 => 'view_private_ticket',
-		'edit_post'				 => 'edit_ticket',
-		'edit_posts'			 => 'edit_ticket',
-		'edit_others_posts' 	 => 'edit_other_ticket',
-		'edit_private_posts' 	 => 'edit_private_ticket',
-		'edit_published_posts' 	 => 'edit_ticket',
-		'publish_posts'			 => 'create_ticket',
-		'delete_post'			 => 'delete_ticket',
-		'delete_posts'			 => 'delete_ticket',
-		'delete_private_posts' 	 => 'delete_private_ticket',
-		'delete_published_posts' => 'delete_ticket',
-		'delete_others_posts' 	 => 'delete_other_ticket',
+		'read'				=> 'view_ticket',
+		'read_post'			=> 'view_ticket',
+		'read_private_posts' 		=> 'view_private_ticket',
+		'edit_post'			=> 'edit_ticket',
+		'edit_posts'			=> 'edit_ticket',
+		'edit_others_posts' 		=> 'edit_other_ticket',
+		'edit_private_posts' 		=> 'edit_private_ticket',
+		'edit_published_posts' 		=> 'edit_ticket',
+		'publish_posts'			=> 'create_ticket',
+		'delete_post'			=> 'delete_ticket',
+		'delete_posts'			=> 'delete_ticket',
+		'delete_private_posts' 	 	=> 'delete_private_ticket',
+		'delete_published_posts'	=> 'delete_ticket',
+		'delete_others_posts' 	 	=> 'delete_other_ticket',
 	);
 	apply_filters( 'support_ticket_type_capabilities', $capabilities );
 
