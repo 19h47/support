@@ -3,7 +3,7 @@
 /**
  * Post type
  *
- * @author Jérémy Levron jeremylevron@19h47.fr
+ * @author Jérémy Levron <jeremylevron@19h47.fr>
  */
 
 
@@ -34,12 +34,6 @@ function support_register_post_type() {
 	// );
 
 
-	// If the post is being created we add the editor
-	if( ! isset( $_GET['post'] ) ) {
-		array_push( $supports, 'editor' );
-	}
-
-
 	// Post type labels
 	$labels =  array(
 		'name'               => _x( 'Tickets', 'post type general name', 'support' ),
@@ -62,23 +56,24 @@ function support_register_post_type() {
 
 	// Post type rewrite
 	$rewrite = array(
-		'slug' 		=> apply_filters( 'support_rewrite_slug', $slug ),
+		'slug' 			=> apply_filters( 'support_rewrite_slug', $slug ),
 		'with_front' 	=> false
 	);
 
+
 	// Post type capabilities
 	$capabilities = array(
-		'read'				=> 'view_ticket',
-		'read_post'			=> 'view_ticket',
+		'read'						=> 'view_ticket',
+		'read_post'					=> 'view_ticket',
 		'read_private_posts' 		=> 'view_private_ticket',
-		'edit_post'			=> 'edit_ticket',
-		'edit_posts'			=> 'edit_ticket',
+		'edit_post'					=> 'edit_ticket',
+		'edit_posts'				=> 'edit_ticket',
 		'edit_others_posts' 		=> 'edit_other_ticket',
 		'edit_private_posts' 		=> 'edit_private_ticket',
 		'edit_published_posts' 		=> 'edit_ticket',
-		'publish_posts'			=> 'create_ticket',
-		'delete_post'			=> 'delete_ticket',
-		'delete_posts'			=> 'delete_ticket',
+		'publish_posts'				=> 'create_ticket',
+		'delete_post'				=> 'delete_ticket',
+		'delete_posts'				=> 'delete_ticket',
 		'delete_private_posts' 	 	=> 'delete_private_ticket',
 		'delete_published_posts'	=> 'delete_ticket',
 		'delete_others_posts' 	 	=> 'delete_other_ticket',
@@ -109,4 +104,122 @@ function support_register_post_type() {
 
 
 	register_post_type( 'ticket', $args );
+}
+
+
+add_action( 'init', 'support_register_post_status' );
+
+/**
+ * Register custom ticket status.
+ *
+ * @since  1.0.0
+ * @return void
+ */
+function support_register_post_status() {
+	$status = support_get_post_status();
+
+	foreach ( $status as $id => $custom_status ) {
+		$args = array(
+			'label'                     => $custom_status,
+			'public'                    => true,
+			'exclude_from_search'       => false,
+			'show_in_admin_all_list'    => true,
+			'show_in_admin_status_list' => true,
+			'label_count'               => _n_noop( "$custom_status <span class='count'>(%s)</span>", "$custom_status <span class='count'>(%s)</span>", 'support' ),
+		);
+		register_post_status( $id, $args );
+	}
+
+	// Hardcode the read and unread status used for replies.
+	// register_post_status( 'read',
+	// 	array(
+	// 		'label' => _x( 'Read', 'Reply status', 'support' ),
+	// 		'public' => false
+	// 	)
+	// );
+	// register_post_status( 'unread',
+	// 	array(
+	// 		'label' => _x( 'Unread', 'Reply status', 'support' ),
+	// 		'public' => false
+	// 	)
+	// );
+}
+
+
+/**
+ * Get available ticket status.
+ *
+ * @since  1.0.0
+ * @return array List of filtered statuses
+ */
+function support_get_post_status() {
+	$status = array(
+		'queued'     	=> _x( 'New', 'Ticket status', 'support' ),
+		'processing' 	=> _x( 'In Progress', 'Ticket status', 'support' ),
+		'hold'       	=> _x( 'On Hold', 'Ticket status', 'support' ),
+		'test'			=> _x( 'To test', 'Ticket status', 'support' ),
+		'resolved'		=> _x( 'Resolved', 'Ticket status', 'support' ),
+	);
+
+	return apply_filters( 'support_ticket_statuses', $status );
+}
+
+
+add_action( 'admin_footer', 'support_add_post_status' );
+
+/**
+ * Add post status
+ *
+ * @see  https://paulund.co.uk/register-new-post-status
+ * @since  1.0.0
+ */
+function support_add_post_status( $post ) {
+
+	if ( get_current_screen()->post_type !== 'ticket' ) {
+		return false;
+	}
+
+	global $wp_post_statuses, $post;
+
+	$options = '';
+	$display = '';
+
+	foreach ( $wp_post_statuses as $status ) {
+
+		if ( $status->_builtin ) {
+			continue;
+		}
+
+		// Match against the current posts status
+		$selected = selected( $post->post_status, $status->name, false );
+
+		// If we one of our custom post status is selected, remember it
+		$selected AND $display = $status->label;
+
+		// Build the options
+		$options .= "<option{$selected} value='{$status->name}'>{$status->label}</option>";
+	}
+
+	?>
+	<script>
+		jQuery(document).ready(function($) {
+
+			<?php
+
+			// Add the selected post status label to the "Status: [Name] (Edit)"
+			if ( ! empty( $display ) ) : ?>
+				$('#post-status-display').html('<?php echo $display ?>');
+			<?php endif
+
+
+	    	// Add the options to the <select> element
+			?>
+			$('.edit-post-status').on( 'click', function() {
+				var select = $('#post-status-select').find('select');
+
+				$(select).append('<?php echo $options ?>');
+			});
+		});
+	</script>
+	<?php
 }

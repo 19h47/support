@@ -54,6 +54,11 @@ final class Support {
 		// First of all we need the constants
 		self::$instance->setup_constants();
 		self::$instance->includes();
+
+
+		if ( is_admin() ) {
+			self::$instance->includes_admin();
+		}
 	}
 
 
@@ -76,6 +81,17 @@ final class Support {
 	 */
 	private function includes() {
 		require_once SUPPORT_PATH . '/includes/functions-post-type.php';
+	}
+
+
+	/**
+	 * Include all files used in admin only
+	 *
+	 * @since 1.0.0
+	 * @return void
+	 */
+	private function includes_admin() {
+		require_once SUPPORT_PATH . '/includes/admin/functions-metaboxes.php';
 	}
 }
 
