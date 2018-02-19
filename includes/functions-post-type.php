@@ -63,17 +63,17 @@ function support_register_post_type() {
 
 	// Post type capabilities
 	$capabilities = array(
-		'read'						=> 'view_ticket',
-		'read_post'					=> 'view_ticket',
+		'read'				=> 'view_ticket',
+		'read_post'			=> 'view_ticket',
 		'read_private_posts' 		=> 'view_private_ticket',
-		'edit_post'					=> 'edit_ticket',
-		'edit_posts'				=> 'edit_ticket',
+		'edit_post'			=> 'edit_ticket',
+		'edit_posts'			=> 'edit_ticket',
 		'edit_others_posts' 		=> 'edit_other_ticket',
 		'edit_private_posts' 		=> 'edit_private_ticket',
 		'edit_published_posts' 		=> 'edit_ticket',
-		'publish_posts'				=> 'create_ticket',
-		'delete_post'				=> 'delete_ticket',
-		'delete_posts'				=> 'delete_ticket',
+		'publish_posts'			=> 'create_ticket',
+		'delete_post'			=> 'delete_ticket',
+		'delete_posts'			=> 'delete_ticket',
 		'delete_private_posts' 	 	=> 'delete_private_ticket',
 		'delete_published_posts'	=> 'delete_ticket',
 		'delete_others_posts' 	 	=> 'delete_other_ticket',
@@ -157,8 +157,8 @@ function support_get_post_status() {
 		'queued'     	=> _x( 'New', 'Ticket status', 'support' ),
 		'processing' 	=> _x( 'In Progress', 'Ticket status', 'support' ),
 		'hold'       	=> _x( 'On Hold', 'Ticket status', 'support' ),
-		'test'			=> _x( 'To test', 'Ticket status', 'support' ),
-		'resolved'		=> _x( 'Resolved', 'Ticket status', 'support' ),
+		'test'		=> _x( 'To test', 'Ticket status', 'support' ),
+		'resolved'	=> _x( 'Resolved', 'Ticket status', 'support' ),
 	);
 
 	return apply_filters( 'support_ticket_statuses', $status );
@@ -199,20 +199,20 @@ function support_add_post_status( $post ) {
 		// Build the options
 		$options .= "<option{$selected} value='{$status->name}'>{$status->label}</option>";
 	}
-
-	?>
-	<script>
+	
+	// @todo put this script in partial
+	?><script>
 		jQuery(document).ready(function($) {
 
 			<?php
-
+		
 			// Add the selected post status label to the "Status: [Name] (Edit)"
 			if ( ! empty( $display ) ) : ?>
 				$('#post-status-display').html('<?php echo $display ?>');
 			<?php endif
 
 
-	    	// Add the options to the <select> element
+	    		// Add the options to the <select> element
 			?>
 			$('.edit-post-status').on( 'click', function() {
 				var select = $('#post-status-select').find('select');
