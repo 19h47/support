@@ -220,6 +220,5 @@ function support_add_post_status( $post ) {
 				$(select).append('<?php echo $options ?>');
 			});
 		});
-	</script>
-	<?php
+	</script><?php
 }
